@@ -1,10 +1,10 @@
+import pytest
+
 from .shared_func import client, test_db
 
 
 class TestMoneyStock:
     def test_create_money_stock(self, test_db):
-
-        response = client.get("/money-stock/all")
         response = client.post(
             "/money-stock/",
             json={"title": 500, "type": "banknotes", "amount": 20},
@@ -22,7 +22,15 @@ class TestMoneyStock:
         assert data["type"] == "banknotes"
         assert data["amount"] == 20
 
-    def test_post_eror_money_already_exist(self, test_db):
+    def test_post_error_money_title_not_correct(self, test_db):
+        response = client.post(
+            "/money-stock/",
+            json={"title": 99999, "type": "banknotes", "amount": 20},
+        )
+
+        assert response.status_code == 422
+
+    def test_post_error_money_already_exist(self, test_db):
         response = client.post(
             "/money-stock/",
             json={"title": 100, "type": "banknotes", "amount": 10},
@@ -36,7 +44,7 @@ class TestMoneyStock:
         assert response.status_code == 400
 
     def test_get_error_money_not_found(self, test_db):
-        title = 50000
+        title = 100
         response = client.get(f"/money-stock/{title}")
         assert response.status_code == 404
 
@@ -89,7 +97,8 @@ class TestMoneyStock:
         assert data_updated["amount"] == 10
 
     def test_update_error_money_not_found(self, test_db):
-        title = 9000
+        title = 1000
+
         response_update = client.put(
             f"/money-stock/",
             json={"title": title, "type": "banknotes", "amount": 30},

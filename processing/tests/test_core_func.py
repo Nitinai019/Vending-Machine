@@ -11,7 +11,7 @@ from vending.core_func import (
     usage_money_stock,
     calculate_change,
 )
-from vending.schemas import MoneyStock, ProductStock, MoneyType
+from vending.schemas import MoneyStock, ProductStock, MONEY_TYPE, MONEY_LIST
 
 
 @pytest.fixture(scope="class")
@@ -55,39 +55,34 @@ def money_init():
 
 
 class TestCalculateUserMoney:
-    def test_sample_case(self, money_title_init):
-        user_cash = [
-            MoneyStock(title=5, type=MoneyType.coins, amount=2),
-            MoneyStock(title=20, type=MoneyType.banknotes, amount=2),
+    def test_sample_case(self):
+        user_money = [
+            MoneyStock(title=5, type="coins", amount=2),
+            MoneyStock(title=20, type="banknotes", amount=2),
         ]
         expect_data = 0
 
-        for c in user_cash:
+        for c in user_money:
             expect_data += c.title * c.amount
 
-        actual = calculate_user_money(user_cash, money_title_init)
+        actual = calculate_user_money(user_money)
 
         assert actual == expect_data
 
-    def test_money_title_error(self, money_title_init):
-        user_cash = [
-            MoneyStock(title=5, type=MoneyType.coins, amount=2),
-            MoneyStock(title=99, type=MoneyType.banknotes, amount=2),
-        ]
-        with pytest.raises(CustomException) as excinfo:
-            calculate_user_money(user_cash, money_title_init)
+    def test_money_title_error(self):
+        with pytest.raises(ValueError) as excinfo:
+            user_money = [
+                MoneyStock(title=5, type="coins", amount=2),
+                MoneyStock(title=99, type="banknotes", amount=2),
+            ]
+            calculate_user_money(user_money)
 
-        money_title = list(money_title_init.values())
-
-        assert excinfo.value.message == f"The money title must be in {money_title}"
-        assert excinfo.value.status_code == 404
-
-    def test_money_type_error(self, money_title_init):
+    def test_money_type_error(self):
         with pytest.raises(ValidationError):
-            user_cash = [
+            user_money = [
                 MoneyStock(title=5, type="card", amount=2),
             ]
-            calculate_user_money(user_cash, money_title_init)
+            calculate_user_money(user_money)
 
 
 class TestProductPrice:
