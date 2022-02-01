@@ -27,17 +27,15 @@ def buy_product(payload: schemas.UserUsage, db: Session = Depends(get_db)) -> in
     all_products = product_list(db)
     all_money = money_list(db)
 
-    all_money_title = {i.title: i.type for i in all_money}
-
-    u_cash = calculate_user_money(payload.money, all_money_title)
+    u_money = calculate_user_money(payload.money)
 
     p_price = product_price(
         payload.products.title, all_products, payload.products.amount
     )
-    change = calculate_change(u_cash, p_price)
-    total_cash_stock_used = usage_money_stock(u_cash, all_money)
+    change = calculate_change(u_money, p_price)
+    total_money_stock_used = usage_money_stock(u_money, all_money)
 
-    for i in total_cash_stock_used:
+    for i in total_money_stock_used:
         title, amount = i
         a_money = crud.get_money(db, title=title)
         money_stock_update = a_money.amount - amount

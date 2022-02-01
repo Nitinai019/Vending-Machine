@@ -24,8 +24,8 @@ def usage_money_stock(
     money: int, money_list: List[schemas.MoneyStock]
 ) -> List[Tuple[int, int]]:
     """
-    This function use for calculate cash usage from change and then response
-    list of cash value and number of cash that are used and return list of cash usage.
+    This function use for calculate money usage from change and then response
+    list of money value and number of money that are used and return list of money usage.
     """
 
     stock_used = []
@@ -84,29 +84,27 @@ def calculate_change(u_money: int, p_price: int) -> int:
     return change
 
 
-def calculate_user_money(
-    cash: List[schemas.MoneyStock], all_money_details: Dict
-) -> int:
+def calculate_user_money(money: List[schemas.MoneyStock]) -> int:
     """
     calculate total of user money and return it.
     """
 
     result = 0
-    money_title = list(all_money_details.values())
-    money_type = list(schemas.MoneyType._member_map_)
+    money_type = schemas.MONEY_TYPE
 
-    for c in cash:
-        if c.title not in all_money_details:
+    for m in money:
+        if m.title not in schemas.MONEY_LIST.keys():
             raise main.CustomException(
-                status_code=404, message=f"The money title must be in {money_title}"
+                status_code=404,
+                message=f"The money title must be in {schemas.MONEY_LIST.keys()}",
             )
 
-        if c.type != all_money_details[c.title]:
+        if m.type != schemas.MONEY_LIST[m.title]:
             raise main.CustomException(
                 status_code=400,
                 message=f"The money type is not correct. should be {money_type}",
             )
 
-        result += c.title * c.amount
+        result += m.title * m.amount
 
     return result
