@@ -3,16 +3,16 @@
 Quickstart
 ----------
 
-1. go to processing/db directory and use command for change permission of file.
-    ```
-        chmod +x 01-init.sh 
-    ```
 
-2. Then create ``.env`` file in the processing directory.
+1. create ``.env`` file in the processing directory.
  and set environment variables for application:
     ```
         touch .env
         echo DATABASE_URL=postgresql://postgres:password@db:5432/vending >> .env
+    ```
+2. Then use command for change file permission.
+    ```
+        chmod +x processing/db/01-init.sh 
     ```
 
 3. run application
