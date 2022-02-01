@@ -12,7 +12,7 @@ Quickstart
  and set environment variables for application:
     ```
         touch .env
-        echo DATABASE_URL=postgresql://postgres:password@db:5432/vending
+        echo DATABASE_URL=postgresql://postgres:password@db:5432/vending >> .env
     ```
 
 3. run application
@@ -20,12 +20,16 @@ Quickstart
         docker-compose up
     ```
 
+4. Application will be available on ``localhost`` in your browser.
+    ```
+        http://localhost:8000/docs
+    ```
 
-for stop process
+Web routes
+----------
 
-```
-    docker-compose down
-```
+All routes are available on ``/docs`` or ``/redoc`` paths with Swagger or ReDoc.
+
 
 
 Run tests
